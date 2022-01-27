@@ -1,0 +1,30 @@
+version: '3.3'
+services:
+  backend:
+    image: express-sample:latest
+    container_name: express-sample
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend/app:/home/app
+    ports:
+      - ${NODE_PORT}:${NODE_PORT}
+    depends_on:
+      - mongo
+    tty: true
+  mongo:
+    image: mongo-for-express:latest
+    container_name: mongo-for-express
+    build:
+      context: ./mongodb
+      dockerfile: Dockerfile
+    volumes:
+      - ./mongodb/data/db:/data/db
+      - ./mongodb/data/config:/data/config
+
+    ports:
+      - ${MONGO_PORT}:${MONGO_PORT}
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
